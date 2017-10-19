@@ -123,7 +123,7 @@
         }
         rotatedArr.push(temp);
       }
-      
+
       var currentCol = rotatedArr[colIndex];
       //look at new rotatedArr for conflicts
       for (var k = 0; k < currentCol.length; k++) {
@@ -157,11 +157,32 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
+      var count = 0;
+      var colIndex = majorDiagonalColumnIndexAtFirstRow;
+
+      //
+      for (var i = 0; i < this.get('n'); i++) {
+        if (this._isInBounds(i, colIndex)) {
+          if(this.get(i)[colIndex] === 1){
+            count ++;
+          }
+        }
+        colIndex++;
+      }
+
+      if (count > 1) {
+          return true;
+       }
       return false; // fixme
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
+      for (var i = 0; i < this.get('n'); i++) {
+        if (this.hasMajorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
