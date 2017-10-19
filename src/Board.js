@@ -161,9 +161,9 @@
       var colIndex = majorDiagonalColumnIndexAtFirstRow;
       var count = 0;
 
-      for (var i = 0; i < board.length; i++) {
-        if(this._isInBounds(i, colIndex) ) {
-          if(this.get(i)[colIndex] === 1) {
+      for (var r = 0; r < board.length; r++) {
+        if(this._isInBounds(r, colIndex) ) {
+          if(this.get(r)[colIndex] === 1) {
             count++;
           }
         }
@@ -172,15 +172,17 @@
       if (count > 1) {
         return true;
       }
-      return false; // fixme
+      return false;
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
       var board = this.rows();
-
-      for(var i = 0; i < board.length; i++) {
-        if(this.hasMinorDiagonalConflictAt(i)) {
+      var start = (this.get('n') - 2) * - 1;
+      // start is -n + 1
+      // end is n - 1
+      for(var i = start; i <= board.length - 2; i++) {
+        if(this.hasMajorDiagonalConflictAt(i)) {
           return true;
         }
       }
@@ -217,7 +219,7 @@
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
       var board = this.rows();
-
+      //start at 0 and end at n + 1 of the board
       for (var i = 0; i <= board.length + 1; i++) {
         if(this.hasMinorDiagonalConflictAt(i) ) {
           return true;
