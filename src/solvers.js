@@ -11,15 +11,50 @@
 // take a look at solversSpec.js to see what the tests are expecting
 
 
-// return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
+// return a matrix (an array of arrays) representing a single nxn chessboard,
+// with n rooks placed such that none of them can attack each other
 
-
+//input: dimensions of the board (number)
+//output: return an array of arrays (matrix)
 
 window.findNRooksSolution = function(n) {
   var board = new Board ({n:n});
-  var solution = 0;
+  // var solution = 0;
+  var solution = [];
+  var colIndex = 0;
+  // Original:
+  //something to store the solution arrays
+  //check the rook conflicts
+  //iterate over the rows to check the rook placement
+    //if there is a conflict - move to the next square
+    //if there is no conflict - add the possibility
+  //after looking at each possibility return the found solution
+  //hasAnyRooksConflicts
+
+
+  // New:
+  //something to store the solution arrays
+  //for each position on the board
+    // place a rook (togglePiece)
+    // check for conflicts
+      // if there is one, remove rook
+      // if no conflict, do nothing
+  // when at end of board, return solution
+  //
+
+  for (var row = 0; row < n; row++) {
+    for (var col = 0; col < n; col++) {
+      board.togglePiece(row, col);
+      if (board.hasAnyRooksConflicts()) {
+        board.togglePiece(row, col);
+      }
+    }
+  }
+  solution = board.rows();
+
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
+  // should be array of arrays
   return solution;
 };
 
@@ -27,45 +62,106 @@ window.findNRooksSolution = function(n) {
 window.countNRooksSolutions = function(n) {
   var board = new Board({n:n});
   var solutionCount = 0;
+  //call findNRooksSolution for solution count
+
+  // assume: we have a empty board
+  // for each possibility of the rook placement (n)
+    // place a rook
+    // check the conflicts
+      // if there is conflicts, remove the rook
+      // if there no conflicts,
+        //Recurse here
+
+
+  var recurse = (row) => {
+    if (row === n) {
+      solutionCount++;
+      return;
+    }
+
+    for ( var col = 0; col < n; col++) {
+      board.togglePiece(row, col); //places a new rook on the board
+
+      //will check if the new rook has a conflict and if it does not, it will move onto the next row
+      if (!board.hasAnyRooksConflicts() ) {
+        recurse(row + 1);
+      }
+      //if there is a conflict toggle the newest piece back off the board and move on
+      board.togglePiece(row, col);
+    }
+  }
+  recurse(0);
+
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
+// input: number to create a board size
+// output: a 2-D array of all solutions
 window.findNQueensSolution = function(n) {
-  var board = new Board({n:n});
-  var solution = 0;
+  var solution = [];
+  var solutionCheck = false;
 
-  if (n ===2 || n === 3) {
-    return 0;
-  }
+      //Start the board check at (0,0)
+      var board = new Board({n:n});
+      for ( var r = 0; r < n; r++) {
+        for (var c = 0; c < n; c++) {
+          //begin by placing a piece on the board
+          board.togglePiece(r, c);
 
-  //Begin Decision Tree with the new board created with n:n
-  var findSolution = function (board, row) {
-    //if the solution exists it will count up
-    if(solution){
-      solution++;
-      return;
-    }
-    //if the solution does not exist it will now go through and change each board piece one by one
-    for (var i = 0; i < n; i++) {
-      //move board piece until there are no Queen conflicts
-      board.togglePiece(row, i);
-      if (!board.hasAnyQueensConflicts() ) {
-        //if the index of row is less than the board length - 1 it will be recursively called until it reaches the end of the board
-        if (row < (n - 1) ) {
-          findSolution( new Board(board.rows()), rows + 1 );
-        } else {
-          //otherwise the solution will be the same number of rows (or 'n')
+          //if the board has a conflict it should take it off the board.
+          if (board.hasAnyQueensConflicts() ) {
+            board.togglePiece(r, c);
+          }
+        }
+
+        if ( r === n) {
           solution = board.rows();
+          break;
         }
       }
-      //after one solution is found it will continue to move one piece at a time
-      board.togglePiece(row, i);
-    }
-    // findSolution will begin the process from the start of the board
-    findSolution(board, 0);
+      //same thing for each possibility of queens placement as we did for rooks
+
+      //place the queen
+      //check the conflict
+        // if there is conflict we remove the queen (toggle)
+        //if not, do nothing!!!
+
+        //if n is equal to 2 or 3, there are no solutions and should return 0
+        if (n === 2 || n === 3) {
+          return 0;
+        }
+
+        // while (solutionCheck) {
+        //   var root = ;
+        //   if (solutionCheck === true) {
+        //     break;
+        //   }
+        //   for (var r = 0; r < n; r++) {
+        //     for (var c = 0; c < n; c++) {
+        //       board.togglePiece(r, c);
+        //       if (!board.hasAnyQueensConflicts()) {
+        //
+        //       }
+        //       board.togglePiece(r, c);
+        //     }
+        //   }
+        //   if (r ===n) {
+        //     solutionCheck = true;
+        //   }
+        // }
+        //4 is an edge case and cannot start in the corners.
+        //while (row !== n)
+        //look at every choice of first togglePiece
+          //if a toggle choice has no collisions continue to children
+            //continue to check each chil node
+          //if a toggle choice does not have a viable child, move to next row, col
+          //first time a solution is reach at the end of the board- return true and stop
+
+    //return the solution at the end -- get.rows() to get the whole board with found solution
+
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
@@ -82,10 +178,10 @@ window.countNQueensSolutions = function(n) {
   }
 
   //recursive function to go through each possibility
-  var solver = function (row) {
+  var solver = (row) => {
     //the row will check each index to determine if there is a conflict or not
     if (row === n) {
-      //no conflicts, solutionCount will increase by 1
+      //no conflicts, solutionCount will increase by 1 and end the current iteration
       solutionCount++;
       return;
     }
@@ -94,11 +190,11 @@ window.countNQueensSolutions = function(n) {
     for (var i = 0; i < n; i++) {
       board.togglePiece(row, i);
 
-      //if the current board has a conflict it will start the function again with a new row
+      //if the current board does not have a conflict it will start the function again with a new row
       if (!board.hasAnyQueensConflicts() ) {
         solver(row + 1)
       }
-      //after going through the entire loop the next row is checked
+      //after going through the entire loop the next row is checked by placing the next queen
       board.togglePiece(row, i);
     }
   }

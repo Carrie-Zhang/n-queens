@@ -79,18 +79,17 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      var rows = this.rows();
-      var currentRow = rows[rowIndex];
+      var currentRow = this.get(rowIndex);
       var count = 0;
       for (var i = 0; i < currentRow.length; i++) {
         if (currentRow [i] === 1) {
           count++;
         }
+        if ( count > 1) {
+          return true;
+        }
       }
-      if ( count > 1) {
-        return true;
-      }
-      return false; // fixme
+      return false;
     },
 
     // test if any rows on this board contain conflicts
@@ -113,10 +112,11 @@
       var count = 0;
       var rotatedArr = [];
       var rows = this.rows();
+      var n = this.get('n');
 
 
       //create a new rotated array to be checked for any conflicts later on
-      for (var i = 0; i < rows.length; i++) {
+      for (var i = 0; i < n; i++) {
         var temp = [];
         for (var j = 0; j < rows[i].length; j++) {
           temp.push(rows[j][i]);
@@ -131,12 +131,12 @@
           if(currentCol[k] === 1) {
             count++;
         }
+        if (count > 1) {
+          return true;
+        }
       }
 
       //if the count adds to more than 1, there is a conflict and will return true
-      if (count > 1) {
-        return true;
-      }
       return false; // fixme
     },
 
@@ -181,7 +181,7 @@
       var start = (this.get('n') - 2) * - 1;
       // start is -n + 1
       // end is n - 1
-      for(var i = start; i <= board.length - 2; i++) {
+      for(var i = start; i <= board.length - 2  ; i++) {
         if(this.hasMajorDiagonalConflictAt(i)) {
           return true;
         }
@@ -219,8 +219,11 @@
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
       var board = this.rows();
+      var n = this.get('n');
+      n = n - 2;
       //start at 0 and end at n + 1 of the board
-      for (var i = 0; i <= board.length + 1; i++) {
+      //end should be n - 1
+      for (var i = 0; i <= board.length + n; i++) {
         if(this.hasMinorDiagonalConflictAt(i) ) {
           return true;
         }
